@@ -1,0 +1,2326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="description" content="Secost - Premium Telegram Bot Developer. High-quality custom bots and free resources.">
+    <title>Secost - Premium Telegram Bot Developer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            background: linear-gradient(135deg, #1a2742 0%, #243150 100%); /* Simplified blue theme */
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Background Elements - Simplified, no galaxy */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjMWEyNzQyIj48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDVMNSAwWk02IDRMNCA2Wk0tMSAxTDEgLTFaIiBzdHJva2U9IiMyMjM2NWEiIHN0cm9rZS13aWR0aD0iMC41Ij48L3BhdGg+Cjwvc3ZnPg==');
+            opacity: 0.3;
+            z-index: -2;
+        }
+        
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4; /* Reduced opacity */
+        }
+
+        /* Container and Layout */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #2AABEE; }
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(42, 171, 238, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(42, 171, 238, 0.8); }
+        }
+
+        /* Header/Navbar */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 15px 0;
+            transition: background-color 0.3s ease;
+        }
+        
+        header.scrolled {
+            background-color: rgba(3, 9, 22, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(42, 171, 238, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #2AABEE 0%, #229ED9 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: #aad4ff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+        
+        nav a:hover {
+            color: #2AABEE;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #aad4ff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(42, 171, 238, 0.2);
+            padding: 20px 0;
+            z-index: 99;
+        }
+        
+        .mobile-menu a {
+            display: block;
+            padding: 15px 20px;
+            color: #aad4ff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .mobile-menu a:hover {
+            color: #2AABEE;
+        }
+
+        /* Hero Section */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #hero:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 70% 20%, rgba(42, 171, 238, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: pulse-bg 10s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-bg {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+        
+        @media (min-width: 992px) {
+            .hero-content {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        
+        .hero-text {
+            flex: 1;
+            text-align: center;
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        @media (min-width: 992px) {
+            .hero-text {
+                text-align: left;
+            }
+        }
+        
+        .hero-logo-container {
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        .hero-logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(42, 171, 238, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 0 30px rgba(42, 171, 238, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(42, 171, 238, 0.4); }
+            50% { transform: scale(1.1); box-shadow: 0 0 40px rgba(42, 171, 238, 0.6); }
+        }
+        
+        @media (min-width: 992px) {
+            .hero-logo {
+                margin: 0;
+            }
+        }
+        
+        .hero-text h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .highlight-gradient {
+            background: linear-gradient(90deg, #2AABEE 0%, #229ED9 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .animated-text {
+            font-size: 1.5rem;
+            color: #aad4ff;
+            margin-bottom: 20px;
+            height: 32px;
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid #2AABEE;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+            font-weight: 500;
+        }
+        
+        .hero-text p {
+            font-size: 1.125rem;
+            color: #e1e1e1;
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+        
+        @media (min-width: 992px) {
+            .hero-text p {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+        
+        .highlight {
+            color: #2AABEE;
+            font-weight: 600;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        @media (min-width: 992px) {
+            .hero-buttons {
+                justify-content: flex-start;
+            }
+        }
+        
+        .pulse-animation {
+            animation: pulse-btn 2s infinite;
+        }
+        
+        @keyframes pulse-btn {
+            0% {
+                box-shadow: 0 0 0 0 rgba(42, 171, 238, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(42, 171, 238, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(42, 171, 238, 0);
+            }
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 180px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #2AABEE 0%, #1D93D2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(42, 171, 238, 0.3);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .btn-primary:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #3bb8fc 0%, #2aa5e0 100%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(42, 171, 238, 0.5);
+        }
+        
+        .btn-primary:hover:before {
+            opacity: 1;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid #2AABEE;
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(42, 171, 238, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(42, 171, 238, 0.2);
+        }
+        
+        .btn svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+        
+        .hero-card {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            animation: fadeIn 0.8s ease 0.3s forwards;
+            opacity: 0;
+        }
+        
+        .card-content {
+            position: relative;
+            max-width: 400px;
+            background: linear-gradient(135deg, rgba(10, 15, 30, 0.7) 0%, rgba(9, 22, 45, 0.85) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(42, 171, 238, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 40px rgba(42, 171, 238, 0.1) inset;
+            overflow: hidden;
+        }
+        
+        .card-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(42, 171, 238, 0.2), transparent 70%);
+            z-index: -1;
+            animation: glow 3s infinite alternate;
+        }
+        
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .feature-icon {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(42, 171, 238, 0.1);
+            border-radius: 12px;
+            color: #2AABEE;
+        }
+        
+        .feature-text h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .feature-text p {
+            font-size: 0.875rem;
+            color: #aad4ff;
+            opacity: 0.9;
+        }
+
+        /* Services Section */
+        #services {
+            padding: 100px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #2AABEE 0%, #229ED9 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .section-header p {
+            font-size: 1.125rem;
+            color: #aad4ff;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        @media (min-width: 768px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .service-card {
+            background: linear-gradient(135deg, rgba(10, 15, 30, 0.7) 0%, rgba(9, 22, 45, 0.85) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(42, 171, 238, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease forwards;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(42, 171, 238, 0.2);
+        }
+        
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(42, 171, 238, 0.1);
+            border-radius: 24px;
+            margin: 0 auto 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover .service-icon {
+            background-color: rgba(42, 171, 238, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .service-card h3 {
+            font-size: 1.375rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .service-card p {
+            font-size: 1rem;
+            color: #aad4ff;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .service-link {
+            color: #2AABEE;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .service-link:hover {
+            opacity: 0.8;
+            transform: translateX(5px);
+        }
+        
+        .service-link svg {
+            width: 18px;
+            height: 18px;
+            margin-left: 5px;
+        }
+        
+        /* Service Detail Styles */
+        .service-link.service-details-trigger {
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: inherit;
+            padding: 0;
+        }
+        
+        .service-details-container {
+            transition: all 0.5s ease;
+        }
+        
+        .service-details {
+            animation: fadeIn 0.8s ease;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+            transition: all 0.5s ease;
+        }
+        
+        .service-details.hidden {
+            display: none;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        /* Portfolio Section */
+        #portfolio {
+            padding: 100px 0;
+            background: linear-gradient(180deg, rgba(2, 6, 23, 0) 0%, rgba(2, 6, 23, 0.8) 100%);
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        @media (min-width: 768px) {
+            .portfolio-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .portfolio-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid rgba(42, 171, 238, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease forwards;
+            transition: all 0.4s ease;
+        }
+        
+        .portfolio-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .portfolio-image {
+            aspect-ratio: 4/3;
+            width: 100%;
+            transition: all 0.5s ease;
+        }
+        
+        .portfolio-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .portfolio-item:hover .portfolio-overlay {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.6) 60%, rgba(0, 0, 0, 0.2) 100%);
+        }
+        
+        .portfolio-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .portfolio-category {
+            display: inline-block;
+            background-color: rgba(42, 171, 238, 0.3);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 50px;
+            margin-bottom: 10px;
+        }
+        
+        .portfolio-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .portfolio-description {
+            font-size: 0.875rem;
+            color: #aad4ff;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease 0.1s;
+        }
+        
+        .portfolio-item:hover .portfolio-description {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Pricing Section */
+        #pricing {
+            padding: 100px 0;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        @media (min-width: 992px) {
+            .pricing-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .pricing-plan {
+            position: relative;
+            background: linear-gradient(135deg, rgba(10, 15, 30, 0.7) 0%, rgba(9, 22, 45, 0.85) 100%);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 35px 25px;
+            border: 1px solid rgba(42, 171, 238, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease forwards;
+            transition: all 0.3s ease;
+        }
+        
+        .pricing-plan:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+        }
+        
+        .pricing-plan.featured {
+            border: 1px solid #2AABEE;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(12, 20, 33, 0.95) 100%);
+            box-shadow: 0 10px 25px rgba(42, 171, 238, 0.15);
+        }
+        
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, #2AABEE 0%, #229ED9 100%);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 5px 15px;
+            border-radius: 50px;
+        }
+        
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .pricing-name {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .pricing-price {
+            margin-bottom: 10px;
+        }
+        
+        .pricing-amount {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+        
+        .pricing-period {
+            font-size: 1rem;
+            color: #aad4ff;
+            margin-left: 5px;
+        }
+        
+        .pricing-description {
+            text-align: center;
+            color: #aad4ff;
+            margin-bottom: 25px;
+            font-size: 0.975rem;
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+        
+        .pricing-feature {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .pricing-feature-icon {
+            flex-shrink: 0;
+            color: #2AABEE;
+            margin-right: 12px;
+            margin-top: 3px;
+        }
+        
+        .pricing-feature-text {
+            font-size: 0.95rem;
+        }
+        
+        .pricing-cta {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+        }
+        
+        .pricing-cta.primary {
+            background: linear-gradient(90deg, #2AABEE 0%, #229ED9 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(42, 171, 238, 0.3);
+        }
+        
+        .pricing-cta.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(42, 171, 238, 0.4);
+        }
+        
+        .pricing-cta.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid #2AABEE;
+        }
+        
+        .pricing-cta.secondary:hover {
+            background: rgba(42, 171, 238, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        .custom-plan {
+            margin-top: 60px;
+            padding: 40px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(10, 15, 30, 0.7) 0%, rgba(9, 22, 45, 0.85) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(42, 171, 238, 0.2);
+            text-align: center;
+        }
+        
+        .custom-plan h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .custom-plan p {
+            color: #aad4ff;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 25px;
+        }
+
+        /* Contact Section */
+        #contact {
+            padding: 100px 0;
+            background: linear-gradient(0deg, rgba(2, 6, 23, 0.8) 0%, rgba(2, 6, 23, 0) 100%);
+        }
+        
+        .contact-flex {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        @media (min-width: 992px) {
+            .contact-flex {
+                flex-direction: row;
+            }
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            background: linear-gradient(90deg, #2AABEE 0%, #229ED9 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .contact-text {
+            font-size: 1.1rem;
+            color: #e1e1e1;
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+        
+        .contact-method {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(42, 171, 238, 0.1);
+            border-radius: 12px;
+            margin-right: 15px;
+            color: #2AABEE;
+        }
+        
+        .contact-method p {
+            font-size: 1rem;
+            color: #aad4ff;
+        }
+        
+        .contact-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .social-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(42, 171, 238, 0.1);
+            border-radius: 50%;
+            color: #2AABEE;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: #2AABEE;
+            color: white;
+            transform: translateY(-5px);
+        }
+        
+        .contact-form {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(10, 15, 30, 0.7) 0%, rgba(9, 22, 45, 0.85) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(42, 171, 238, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .contact-form h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #aad4ff;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(42, 171, 238, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #2AABEE;
+            box-shadow: 0 0 0 3px rgba(42, 171, 238, 0.2);
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #2AABEE 0%, #229ED9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .form-submit:hover {
+            box-shadow: 0 6px 20px rgba(42, 171, 238, 0.4);
+            transform: translateY(-3px);
+        }
+        
+        /* Telegram Contact Card Styles */
+        .telegram-contact-card {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(15, 30, 60, 0.7) 0%, rgba(25, 40, 80, 0.85) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(42, 171, 238, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        .telegram-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(42, 171, 238, 0.2);
+        }
+        
+        .telegram-header h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+        }
+        
+        .telegram-info p {
+            font-size: 1.05rem;
+            color: #e1e1e1;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .telegram-username {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: rgba(42, 171, 238, 0.1);
+            border: 1px solid rgba(42, 171, 238, 0.3);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .telegram-badge {
+            background-color: #2AABEE;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .username {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .telegram-benefits {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #aad4ff;
+        }
+        
+        .benefit-item svg {
+            color: #2AABEE;
+            flex-shrink: 0;
+        }
+        
+        .telegram-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #2AABEE 0%, #1D93D2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(42, 171, 238, 0.3);
+        }
+        
+        .telegram-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(42, 171, 238, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0 30px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
+            position: relative;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .footer-grid {
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+            }
+        }
+        
+        .footer-brand p {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #aad4ff;
+            max-width: 300px;
+        }
+        
+        .footer-heading {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #aad4ff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: #2AABEE;
+            transform: translateX(5px);
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(42, 171, 238, 0.2);
+            color: #aad4ff;
+            font-size: 0.875rem;
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            nav {
+                display: none;
+            }
+            
+            .mobile-menu.active {
+                display: block;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.25rem;
+            }
+            
+            .hero-text h2 {
+                font-size: 1.25rem;
+            }
+            
+            .hero-text p {
+                font-size: 1rem;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .section-header p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div id="galaxy"></div>
+    <div id="particles-js"></div>
+    
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span>Secost</span>
+                </div>
+                
+                <nav>
+                    <a href="#hero">Home</a>
+                    <a href="#services">Services</a>
+                    <a href="#portfolio">Portfolio</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#contact">Contact</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" aria-label="Toggle mobile menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="container">
+                <a href="#hero">Home</a>
+                <a href="#services">Services</a>
+                <a href="#portfolio">Portfolio</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="hero-logo-container">
+                        <div class="hero-logo">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="#2AABEE">
+                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.761-.613 2.604-1.1 4.803-.487 2.198-.993 4.486-1.445 6.526-.11.508-.486.762-.89.762a1.543 1.543 0 01-.89-.356c-.693-.508-1.722-1.016-2.852-1.524-1.26-.58-1.993-1.016-2.255-1.27-.287-.29-.314-.689-.023-.997.287-.326 1.1-1.198 2.415-2.632a.707.707 0 00-.264-.997c-.132-.072-.31-.036-.486.072-1.993 1.307-3.986 2.596-3.986 2.596l.001-.001c-.31.217-.784.326-1.354.326-.524 0-1.1-.109-1.678-.29-1.13-.362-2.007-.834-2.007-1.307 0-.254.287-.472.76-.689 2.027-.942 4.22-1.776 6.393-2.524 2.978-1.016 6.142-1.885 7.785-2.34.76-.217 1.875-.508 2.255-.508.182 0 .35.036.517.145.37.217.487.58.487.906v.254c-.001.01-.001.019-.001.027z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h1><span class="highlight-gradient">Premium</span> Telegram Bot Developer</h1>
+                    <div>
+                        <h2 class="animated-text">Intelligent Solutions for Modern Business</h2>
+                    </div>
+                    <p>
+                        Transform your digital strategy with <span class="highlight">cutting-edge Telegram bots</span> custom-built for your unique business requirements. From streamlined customer service to advanced AI integrations.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="https://t.me/secost" target="_blank" class="btn btn-primary pulse-animation">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                            Request a Bot
+                        </a>
+                        <a href="#overview" class="btn btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="hero-card" style="animation: float 6s ease-in-out infinite;">
+                    <div class="card-content">
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Custom Analytics</h3>
+                                    <p>Track user interactions and measure performance</p>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Secure Implementation</h3>
+                                    <p>Advanced encryption and security protocols</p>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Instant Deployment</h3>
+                                    <p>Quick setup and minimal downtime</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Overview Section (for Learn More button) -->
+    <section id="overview" class="py-16">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose Our Telegram Bots</h2>
+                <p>Our advanced solutions combine cutting-edge technology with exceptional user experience</p>
+            </div>
+            
+            <div class="overview-content bg-gradient-to-br from-[#0a0f1e]/70 to-[#0f172a]/85 backdrop-blur-xl border border-[#2AABEE]/20 rounded-2xl p-8 shadow-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="overview-image flex justify-center items-center">
+                        <div class="relative w-full max-w-md h-64 overflow-hidden rounded-xl" style="background: radial-gradient(circle at center, rgba(42, 171, 238, 0.2), rgba(9, 22, 45, 0.95));">
+                            <div class="absolute inset-0 flex justify-center items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="#2AABEE" style="opacity: 0.9; filter: drop-shadow(0 0 10px rgba(42, 171, 238, 0.7));">
+                                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.761-.613 2.604-1.1 4.803-.487 2.198-.993 4.486-1.445 6.526-.11.508-.486.762-.89.762a1.543 1.543 0 01-.89-.356c-.693-.508-1.722-1.016-2.852-1.524-1.26-.58-1.993-1.016-2.255-1.27-.287-.29-.314-.689-.023-.997.287-.326 1.1-1.198 2.415-2.632a.707.707 0 00-.264-.997c-.132-.072-.31-.036-.486.072-1.993 1.307-3.986 2.596-3.986 2.596l.001-.001c-.31.217-.784.326-1.354.326-.524 0-1.1-.109-1.678-.29-1.13-.362-2.007-.834-2.007-1.307 0-.254.287-.472.76-.689 2.027-.942 4.22-1.776 6.393-2.524 2.978-1.016 6.142-1.885 7.785-2.34.76-.217 1.875-.508 2.255-.508.182 0 .35.036.517.145.37.217.487.58.487.906v.254c-.001.01-.001.019-.001.027z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overview-text">
+                        <h3 class="text-2xl font-bold mb-4 text-white">Next-Gen Bot Technology</h3>
+                        <p class="text-[#aad4ff] mb-4">
+                            At Secost, we're not just creating bots; we're engineering sophisticated digital assistants that transform how businesses interact with their audience on Telegram.
+                        </p>
+                        <p class="text-[#aad4ff] mb-6">
+                            Every bot we develop is meticulously crafted with industry-leading practices, ensuring maximum performance, security, and user engagement.
+                        </p>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#2AABEE] mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Advanced NLP capabilities for natural conversational flow</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#2AABEE] mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Seamless third-party service integrations</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#2AABEE] mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Comprehensive analytics and performance monitoring</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#2AABEE] mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Enterprise-grade security protocols</span>
+                            </li>
+                        </ul>
+                        <div class="mt-8">
+                            <a href="#services" class="btn btn-primary">
+                                Explore Services
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Services</h2>
+                <p>Discover the full range of premium Telegram bot development services designed to elevate your business presence</p>
+            </div>
+            
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <div class="service-card" style="animation-delay: 0.1s;">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                    </div>
+                    <h3>Customer Support Bots</h3>
+                    <p>Automated customer service solutions with smart response systems and ticket management</p>
+                    <button class="service-link service-details-trigger" data-service="customer-support">
+                        Learn More
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="service-card" style="animation-delay: 0.2s;">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        </svg>
+                    </div>
+                    <h3>Payment Processing Bots</h3>
+                    <p>Secure transaction handling with multiple payment gateway integrations and invoicing</p>
+                    <button class="service-link service-details-trigger" data-service="payment-processing">
+                        Learn More
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="service-card" style="animation-delay: 0.3s;">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                    </div>
+                    <h3>Notification Bots</h3>
+                    <p>Customized alert systems for business updates, promotions, and time-sensitive information</p>
+                    <button class="service-link service-details-trigger" data-service="notification">
+                        Learn More
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Service 4 -->
+                <div class="service-card" style="animation-delay: 0.4s;">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                        </svg>
+                    </div>
+                    <h3>Survey & Feedback Bots</h3>
+                    <p>Collect valuable customer insights through interactive surveys and feedback collection</p>
+                    <button class="service-link service-details-trigger" data-service="survey">
+                        Learn More
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Service 5 -->
+                <div class="service-card" style="animation-delay: 0.5s;">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                        </svg>
+                    </div>
+                    <h3>Chat Management Bots</h3>
+                    <p>Advanced moderation tools for group chats, spam prevention and content filtering</p>
+                    <button class="service-link service-details-trigger" data-service="chat-management">
+                        Learn More
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Service 6 -->
+                <div class="service-card" style="animation-delay: 0.6s;">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+                        </svg>
+                    </div>
+                    <h3>AI Integration Bots</h3>
+                    <p>Harness the power of artificial intelligence with customized chatbots and data analysis</p>
+                    <button class="service-link service-details-trigger" data-service="ai-integration">
+                        Learn More
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Service Details Sections -->
+            <div class="service-details-container mt-12">
+                <!-- Customer Support Details -->
+                <div id="customer-support-details" class="service-details hidden">
+                    <div class="bg-gradient-to-br from-[#0a0f1e]/80 to-[#0f172a]/90 backdrop-blur-xl border border-[#2AABEE]/20 rounded-2xl p-8 shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4 text-white">Customer Support Bot Details</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <p class="text-[#aad4ff] mb-4">
+                                    Our customer support bots provide 24/7 assistance to your clients, handling common inquiries and seamlessly escalating complex issues to human agents when necessary.
+                                </p>
+                                <ul class="space-y-2">
+                                    <li class="flex items-start">
+                                        <svg class="h-5 w-5 text-[#2AABEE] mt-1 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span>Automated ticket creation and management</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="h-5 w-5 text-[#2AABEE] mt-1 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span>Smart response system using advanced NLP</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="h-5 w-5 text-[#2AABEE] mt-1 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span>Integration with existing customer management systems</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="h-5 w-5 text-[#2AABEE] mt-1 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span>Satisfaction surveys and feedback collection</span>
+                                    </li>
+                                </ul>
+                                <a href="#contact" class="btn btn-primary mt-6">Request This Bot</a>
+                            </div>
+                            <div class="flex justify-center items-center">
+                                <div class="relative w-full max-w-md h-64 overflow-hidden rounded-xl bg-gradient-to-br from-[#2AABEE]/20 to-[#0f172a]/80">
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center p-6 text-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-[#2AABEE] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                        </svg>
+                                        <h4 class="text-xl font-bold text-white mb-2">Boost Customer Satisfaction</h4>
+                                        <p class="text-[#aad4ff] text-sm">Reduce response times from hours to seconds with intelligent automation</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Other service details would go here - omitted for brevity -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- Portfolio Section -->
+    <section id="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Work</h2>
+                <p>Browse our portfolio of custom-built Telegram bots that have helped businesses achieve their goals</p>
+            </div>
+            
+            <div class="portfolio-grid">
+                <!-- Portfolio Item 1 -->
+                <div class="portfolio-item" style="animation-delay: 0.1s;">
+                    <div class="portfolio-image" style="background: linear-gradient(135deg, #2AABEE 0%, #1D93D2 100%);"></div>
+                    <div class="portfolio-overlay"></div>
+                    <div class="portfolio-caption">
+                        <div class="portfolio-category">Shopping Bot</div>
+                        <h3 class="portfolio-title">E-commerce Assistant</h3>
+                        <p class="portfolio-description">Streamlined shopping experience with integrated payment processing and inventory management</p>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 2 -->
+                <div class="portfolio-item" style="animation-delay: 0.2s;">
+                    <div class="portfolio-image" style="background: linear-gradient(135deg, #3B41C5 0%, #6269EB 100%);"></div>
+                    <div class="portfolio-overlay"></div>
+                    <div class="portfolio-caption">
+                        <div class="portfolio-category">Business Bot</div>
+                        <h3 class="portfolio-title">Event Planner</h3>
+                        <p class="portfolio-description">Complete event management solution with automatic reminders and attendee tracking</p>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 3 -->
+                <div class="portfolio-item" style="animation-delay: 0.3s;">
+                    <div class="portfolio-image" style="background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);"></div>
+                    <div class="portfolio-overlay"></div>
+                    <div class="portfolio-caption">
+                        <div class="portfolio-category">Service Bot</div>
+                        <h3 class="portfolio-title">Customer Support</h3>
+                        <p class="portfolio-description">Intelligent customer assistance system with ticket management and live chat handover</p>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 4 -->
+                <div class="portfolio-item" style="animation-delay: 0.4s;">
+                    <div class="portfolio-image" style="background: linear-gradient(135deg, #f2709c 0%, #ff9472 100%);"></div>
+                    <div class="portfolio-overlay"></div>
+                    <div class="portfolio-caption">
+                        <div class="portfolio-category">Media Bot</div>
+                        <h3 class="portfolio-title">Content Publisher</h3>
+                        <p class="portfolio-description">Automated content publishing with scheduled posts and analytics tracking</p>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 5 -->
+                <div class="portfolio-item" style="animation-delay: 0.5s;">
+                    <div class="portfolio-image" style="background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);"></div>
+                    <div class="portfolio-overlay"></div>
+                    <div class="portfolio-caption">
+                        <div class="portfolio-category">Marketing Bot</div>
+                        <h3 class="portfolio-title">Survey Collector</h3>
+                        <p class="portfolio-description">Interactive surveys with data analysis and response visualization tools</p>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 6 -->
+                <div class="portfolio-item" style="animation-delay: 0.6s;">
+                    <div class="portfolio-image" style="background: linear-gradient(135deg, #4158D0 0%, #C850C0 50%, #FFCC70 100%);"></div>
+                    <div class="portfolio-overlay"></div>
+                    <div class="portfolio-caption">
+                        <div class="portfolio-category">Advanced Bot</div>
+                        <h3 class="portfolio-title">AI Assistant</h3>
+                        <p class="portfolio-description">State-of-the-art AI-powered assistant with natural language understanding</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#contact" class="btn btn-secondary">View All Projects</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing Section -->
+    <section id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Pricing Plans</h2>
+                <p>Choose the perfect plan for your business needs with transparent pricing and no hidden fees</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <!-- Basic Plan -->
+                <div class="pricing-plan" style="animation-delay: 0.1s;">
+                    <div class="pricing-header">
+                        <h3 class="pricing-name">Basic</h3>
+                        <div class="pricing-price">
+                            <span class="pricing-amount">$30</span>
+                            <span class="pricing-period">starting at</span>
+                        </div>
+                    </div>
+                    <p class="pricing-description">Simple bots for basic tasks. Price may be lower depending on complexity.</p>
+                    <ul class="pricing-features">
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Basic Command Bot</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Simple Interactive Menus</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Text & Image Responses</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">1 Free Revision</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Fast Delivery (1-3 Days)</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Basic Installation Guide</span>
+                        </li>
+                    </ul>
+                    <a href="https://t.me/secost" target="_blank" class="pricing-cta secondary">Contact for Quote</a>
+                </div>
+                
+                <!-- Pro Plan -->
+                <div class="pricing-plan featured" style="animation-delay: 0.2s;">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3 class="pricing-name">Standard</h3>
+                        <div class="pricing-price">
+                            <span class="pricing-amount">$80</span>
+                            <span class="pricing-period">starting at</span>
+                        </div>
+                    </div>
+                    <p class="pricing-description">Advanced features for growing businesses. Final price depends on requirements.</p>
+                    <ul class="pricing-features">
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Everything in Starter</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Interactive UI Elements</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Data Collection Forms</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Basic Analytics</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">2 Weeks of Revisions</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Detailed Documentation</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">1 Month Free Support</span>
+                        </li>
+                    </ul>
+                    <a href="https://t.me/secost" target="_blank" class="pricing-cta primary">Contact for Quote</a>
+                </div>
+                
+                <!-- Premium Plan -->
+                <div class="pricing-plan" style="animation-delay: 0.3s;">
+                    <div class="pricing-header">
+                        <h3 class="pricing-name">Premium</h3>
+                        <div class="pricing-price">
+                            <span class="pricing-amount">$150+</span>
+                            <span class="pricing-period">custom pricing</span>
+                        </div>
+                    </div>
+                    <p class="pricing-description">Complex bots for business automation. Pricing depends on features required.</p>
+                    <ul class="pricing-features">
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Everything in Professional</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">AI-Powered Responses</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Payment Processing</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Custom Integrations</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">Advanced Analytics</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">4 Weeks of Revisions</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <span class="pricing-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </span>
+                            <span class="pricing-feature-text">3 Months Free Support</span>
+                        </li>
+                    </ul>
+                    <a href="https://t.me/secost" target="_blank" class="pricing-cta secondary">Contact for Quote</a>
+                </div>
+            </div>
+            
+            <div class="custom-plan">
+                <h3>Need a Custom Solution?</h3>
+                <p>We offer tailored solutions for businesses with unique requirements. Reach out to discuss your project.</p>
+                <a href="https://t.me/secost" target="_blank" class="btn btn-secondary">Contact Us on Telegram</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Get in Touch</h2>
+                <p>Have questions or ready to start your project? Contact us and we'll get back to you within 24 hours.</p>
+            </div>
+            
+            <div class="contact-flex">
+                <div class="contact-info">
+                    <h3>Let's Discuss Your Bot</h3>
+                    <p class="contact-text">
+                        Ready to elevate your Telegram presence with a custom bot solution? Fill out the form or contact us directly through one of our channels.
+                    </p>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <p>contact@secost.com</p>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <p>Monday - Friday, 9AM - 6PM (GMT)</p>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <p>Global Service, Remote Team</p>
+                    </div>
+                    
+                    <div class="contact-social">
+                        <a href="https://t.me/secost" target="_blank" class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="telegram-contact-card">
+                    <div class="telegram-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="#2AABEE">
+                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.761-.613 2.604-1.1 4.803-.487 2.198-.993 4.486-1.445 6.526-.11.508-.486.762-.89.762a1.543 1.543 0 01-.89-.356c-.693-.508-1.722-1.016-2.852-1.524-1.26-.58-1.993-1.016-2.255-1.27-.287-.29-.314-.689-.023-.997.287-.326 1.1-1.198 2.415-2.632a.707.707 0 00-.264-.997c-.132-.072-.31-.036-.486.072-1.993 1.307-3.986 2.596-3.986 2.596l.001-.001c-.31.217-.784.326-1.354.326-.524 0-1.1-.109-1.678-.29-1.13-.362-2.007-.834-2.007-1.307 0-.254.287-.472.76-.689 2.027-.942 4.22-1.776 6.393-2.524 2.978-1.016 6.142-1.885 7.785-2.34.76-.217 1.875-.508 2.255-.508.182 0 .35.036.517.145.37.217.487.58.487.906v.254c-.001.01-.001.019-.001.027z"/>
+                        </svg>
+                        <h3>Contact on Telegram</h3>
+                    </div>
+                    <div class="telegram-info">
+                        <p>For the fastest response and personalized assistance with your bot project, contact us directly on Telegram.</p>
+                        
+                        <div class="telegram-username">
+                            <div class="telegram-badge">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <span class="username">@secost</span>
+                        </div>
+                        
+                        <div class="telegram-benefits">
+                            <div class="benefit-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Fast response (usually within 1-2 hours)</span>
+                            </div>
+                            <div class="benefit-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>Get a price quote within 24 hours</span>
+                            </div>
+                            <div class="benefit-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                <span>Secure and private communication</span>
+                            </div>
+                        </div>
+                        
+                        <a href="https://t.me/secost" target="_blank" class="telegram-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                            </svg>
+                            Chat on Telegram
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span>Secost</span>
+                    </div>
+                    <p>Premium Telegram bot development services for businesses of all sizes. Custom solutions that drive results.</p>
+                    <div class="footer-social">
+                        <a href="https://t.me/secost" target="_blank" class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-links-section">
+                    <h4 class="footer-heading">Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="#services">Customer Support</a></li>
+                        <li><a href="#services">Payment Processing</a></li>
+                        <li><a href="#services">Notifications</a></li>
+                        <li><a href="#services">Survey & Feedback</a></li>
+                        <li><a href="#services">Chat Management</a></li>
+                        <li><a href="#services">AI Integration</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links-section">
+                    <h4 class="footer-heading">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#hero">About Us</a></li>
+                        <li><a href="#portfolio">Portfolio</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links-section">
+                    <h4 class="footer-heading">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Tutorials</a></li>
+                        <li><a href="#">API References</a></li>
+                        <li><a href="#">Support Center</a></li>
+                        <li><a href="#">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 Secost. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Header scroll effect
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.getElementById('header');
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            
+            // Scroll event for header
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            // Mobile menu toggle
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('active');
+            });
+            
+            // Close mobile menu when a link is clicked
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+            
+            // Smooth scrolling for all anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        const headerHeight = 80; // Adjust based on your header height
+                        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Handle service detail sections
+            const serviceDetailsTriggers = document.querySelectorAll('.service-details-trigger');
+            const serviceDetails = document.querySelectorAll('.service-details');
+            
+            if (serviceDetailsTriggers.length > 0) {
+                serviceDetailsTriggers.forEach(trigger => {
+                    trigger.addEventListener('click', function() {
+                        const service = this.getAttribute('data-service');
+                        const detailsSection = document.getElementById(`${service}-details`);
+                        
+                        // Hide all other service details
+                        serviceDetails.forEach(detail => {
+                            if (detail.id !== `${service}-details`) {
+                                detail.classList.add('hidden');
+                            }
+                        });
+                        
+                        // Toggle current service details
+                        if (detailsSection) {
+                            detailsSection.classList.toggle('hidden');
+                            
+                            // Scroll to details if they're now visible
+                            if (!detailsSection.classList.contains('hidden')) {
+                                const headerHeight = 80;
+                                const offset = 20; // Additional offset
+                                const targetPosition = detailsSection.getBoundingClientRect().top + window.pageYOffset - headerHeight - offset;
+                                
+                                window.scrollTo({
+                                    top: targetPosition,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }
+                    });
+                });
+            }
+            
+            // Initialize contact form
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Simple form validation example
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const project = document.getElementById('project').value;
+                    const message = document.getElementById('message').value;
+                    
+                    if (!name || !email || !project || !message) {
+                        alert('Please fill in all fields');
+                        return;
+                    }
+                    
+                    // Here you would typically send the form data to a server
+                    // For this example, we'll just show a success message
+                    alert('Thank you for your message! We will get back to you shortly.');
+                    contactForm.reset();
+                });
+            }
+            
+            // Handle "Request Bot" button - smooth scroll to contact section
+            const requestBotButtons = document.querySelectorAll('a[href="#contact"], button[href="#contact"]');
+            requestBotButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const contactSection = document.getElementById('contact');
+                    if (contactSection) {
+                        const headerHeight = 80;
+                        const targetPosition = contactSection.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        // If there's a project type field, set it based on the button
+                        const projectField = document.getElementById('project');
+                        if (projectField && this.dataset.project) {
+                            // Find the option and select it
+                            for (let i = 0; i < projectField.options.length; i++) {
+                                if (projectField.options[i].value === this.dataset.project) {
+                                    projectField.selectedIndex = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+        
+        // Background effects - simplified with subtle particles only (no galaxy)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize particles.js with more subtle settings
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS("particles-js", {
+                    "particles": {
+                        "number": {
+                            "value": 60, // Reduced number of particles
+                            "density": {
+                                "enable": true,
+                                "value_area": 1000
+                            }
+                        },
+                        "color": {
+                            "value": ["#2AABEE", "#3b82f6", "#f0f9ff"] // Blue tones
+                        },
+                        "shape": {
+                            "type": "circle",
+                            "stroke": {
+                                "width": 0,
+                                "color": "#000000"
+                            }
+                        },
+                        "opacity": {
+                            "value": 0.3, // Lower opacity for subtle effect
+                            "random": true,
+                            "anim": {
+                                "enable": true,
+                                "speed": 0.5, // Slower animation
+                                "opacity_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "size": {
+                            "value": 2,
+                            "random": true,
+                            "anim": {
+                                "enable": true,
+                                "speed": 1,
+                                "size_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "line_linked": {
+                            "enable": true,
+                            "distance": 150,
+                            "color": "#2AABEE",
+                            "opacity": 0.2, // More subtle lines
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 0.8, // Slower movement
+                            "direction": "none",
+                            "random": true,
+                            "straight": false,
+                            "out_mode": "out",
+                            "bounce": false,
+                            "attract": {
+                                "enable": true,
+                                "rotateX": 600,
+                                "rotateY": 1200
+                            }
+                        }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "grab"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            },
+                            "resize": true
+                        },
+                        "modes": {
+                            "grab": {
+                                "distance": 140,
+                                "line_linked": {
+                                    "opacity": 0.5
+                                }
+                            },
+                            "push": {
+                                "particles_nb": 3
+                            }
+                        }
+                    },
+                    "retina_detect": true
+                });
+            } else {
+                console.warn("particles.js is not loaded");
+            }
+        });
+    </script>
+</body>
+</html>
